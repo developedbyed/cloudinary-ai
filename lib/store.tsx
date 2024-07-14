@@ -24,22 +24,14 @@ const createZustandContext = <TInitial, TStore extends StoreApi<any>>(
 }
 
 type State = {
-  activeImage: string
-  setActiveImage: (image: string) => void
   tags: string[]
   setTags: (tags: string[]) => void
   activeTag: string
   setActiveTag: (tag: string) => void
-  publicId: string
-  setPublicId: (publicId: string) => void
   activeColor: string
   setActiveColor: (color: string) => void
   generating: boolean
   setGenerating: (generating: boolean) => void
-  imageHeight: number
-  imageWidth: number
-  setImageHeight: (height: number) => void
-  setImageWidth: (width: number) => void
   xCrop: number
   yCrop: number
   setXCrop: (xCrop: number) => void
@@ -55,19 +47,13 @@ const getStore = (initialState: {
     tags: [],
     activeTag: initialState.activeTag,
     setTags: (tags) => set({ tags }),
-    activeImage: initialState.activeImage,
-    setActiveImage: (image) => set({ activeImage: image }),
+
     setActiveTag: (tag) => set({ activeTag: tag }),
-    publicId: "",
-    setPublicId: (publicId) => set({ publicId }),
+
     activeColor: initialState.activeColor,
     setActiveColor: (color) => set({ activeColor: color }),
     generating: false,
     setGenerating: (generating) => set({ generating }),
-    imageHeight: 0,
-    imageWidth: 0,
-    setImageHeight: (height) => set({ imageHeight: height }),
-    setImageWidth: (width) => set({ imageWidth: width }),
     xCrop: 0,
     yCrop: 0,
     setXCrop: (xCrop) => set({ xCrop }),

@@ -49,5 +49,6 @@ export const recolorImage = actionClient
     if (!isProcessed) {
       throw new Error("Image processing timed out")
     }
+    console.log(recolorUrl)
     return { success: recolorUrl }
   })

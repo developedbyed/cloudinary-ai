@@ -2,9 +2,11 @@
 import { ImageStore } from "@/lib/store"
 import UploadForm from "./upload/upload-form"
 import ActiveImage from "./active-image"
-import AIRecolor from "./recolor"
-import GenerativeFill from "./generative-fill"
-import GenRemove from "./gen-remove"
+import AIRecolor from "@/components/toolbar/recolor"
+import GenerativeFill from "@/components/toolbar/generative-fill"
+import GenRemove from "@/components/toolbar/gen-remove"
+import { LayerStore } from "@/lib/layer-store"
+import Layers from "./layers"
 
 export default function Editor() {
   return (
@@ -12,20 +14,37 @@ export default function Editor() {
       initialValue={{
         activeTag: "all",
         activeColor: "green",
-        activeImage:
-          "https://res.cloudinary.com/restyled/image/upload/v1719856697/restyled/pinatdg7tjdsjmnbol0n.jpg",
+        activeImage: "",
       }}
     >
-      <div className="">
-        <h1 className="text-4xl pb-12 font-bold text-center">AI Editor ✨</h1>
-        <div className="flex gap-4 my-4">
-          <AIRecolor />
-          <GenerativeFill />
-          <GenRemove />
+      <LayerStore.Provider
+        initialValue={{
+          layers: [
+            {
+              count: 1,
+              url: "",
+              height: 0,
+              width: 0,
+              publicId: "",
+            },
+          ],
+        }}
+      >
+        <div className="">
+          <div>
+            <div className="flex gap-4 my-4  justify-center py-4">
+              <AIRecolor />
+              <GenerativeFill />
+              <GenRemove />
+            </div>
+            <div className="flex gap-4 w-[1280px] max-h-[620px] ">
+              <ActiveImage />
+              <UploadForm />
+              <Layers />
+            </div>
+          </div>
         </div>
-        <UploadForm />
-        <ActiveImage />
-      </div>
+      </LayerStore.Provider>
     </ImageStore.Provider>
   )
 }

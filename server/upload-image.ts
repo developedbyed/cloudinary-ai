@@ -14,38 +14,48 @@ const formData = z.object({
   image: z.instanceof(FormData),
 })
 
+type UploadResult =
+  | { success: UploadApiResponse; error?: never }
+  | { error: string; success?: never }
+
 export const uploadImage = actionClient
   .schema(formData)
-  .action(async ({ parsedInput: { image } }) => {
+  .action(async ({ parsedInput: { image } }): Promise<UploadResult> => {
     console.log(image)
     const formImage = image.get("image")
+
     if (!formImage) return { error: "No image provided" }
     if (!image) return { error: "No image provided" }
+
     const file = formImage as File
-    const arrayBuffer = await file.arrayBuffer()
-    const buffer = new Uint8Array(arrayBuffer)
 
-    const uploadedImage: UploadApiResponse | undefined = await new Promise(
-      (resolve, reject) => {
-        cloudinary.uploader
-          .upload_stream(
-            {
-              upload_preset: "restyled",
-              // categorization: "imagga_tagging",
-              // auto_tagging: 0.8,
-            },
-            (error, success) => {
-              if (error) {
-                reject(error)
-                return { error: error }
-              }
-              resolve(success)
-              return { success: success }
+    try {
+      const arrayBuffer = await file.arrayBuffer()
+      const buffer = Buffer.from(arrayBuffer)
+
+      return new Promise<UploadResult>((resolve, reject) => {
+        const uploadStream = cloudinary.uploader.upload_stream(
+          {
+            upload_preset: "restyled",
+            use_filename: true,
+            unique_filename: false,
+            filename_override: file.name,
+          },
+          (error, result) => {
+            if (error || !result) {
+              console.error("Upload failed:", error)
+              reject({ error: "Upload failed" })
+            } else {
+              console.log("Upload successful:", result)
+              resolve({ success: result })
             }
-          )
-          .end(buffer)
-      }
-    )
+          }
+        )
 
-    return { success: uploadedImage }
+        uploadStream.end(buffer)
+      })
+    } catch (error) {
+      console.error("Error processing file:", error)
+      return { error: "Error processing file" }
+    }
   })

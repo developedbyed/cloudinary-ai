@@ -49,7 +49,7 @@ export const genFill = actionClient
     }
 
     if (!isProcessed) {
-      throw new Error("Image processing timed out")
+      return { error: "Image processing failed" }
     }
     console.log(fillUrl)
     return { success: fillUrl }
