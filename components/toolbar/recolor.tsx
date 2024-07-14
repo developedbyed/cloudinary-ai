@@ -29,7 +29,7 @@ export default function AIRecolor() {
   const addLayer = useLayerStore((state) => state.addLayer)
   const layers = useLayerStore((state) => state.layers)
   const generating = useImageStore((state) => state.generating)
-
+  const setActiveLayer = useLayerStore((state) => state.setActiveLayer)
   return (
     <div className="">
       <Popover>
@@ -134,6 +134,7 @@ export default function AIRecolor() {
                   url: res.data.success,
                 })
                 setGenerating(false)
+                setActiveLayer(layers.length + 1)
               }
             }}
           >

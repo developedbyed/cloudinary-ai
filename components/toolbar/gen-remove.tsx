@@ -29,7 +29,7 @@ export default function GenRemove() {
   const activeLayer = useLayerStore((state) => state.activeLayer)
   const addLayer = useLayerStore((state) => state.addLayer)
   const layers = useLayerStore((state) => state.layers)
-
+  const setActiveLayer = useLayerStore((state) => state.setActiveLayer)
   return (
     <div className="">
       <Popover>
@@ -104,6 +104,7 @@ export default function GenRemove() {
                   publicId: activeLayer.publicId,
                 })
                 setGenerating(false)
+                setActiveLayer(layers.length + 1)
               }
             }}
           >

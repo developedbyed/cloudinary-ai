@@ -71,15 +71,16 @@ const config = {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
-        scroll: {
-          "0%": { transform: "translateX(0)" },
-          "100%": { transform: "translateX(-100%)" },
+        pulsate: {
+          "0%": { boxShadow: "inset 0 0 0 0 rgba(255, 99, 71, 0.5)" },
+          "50%": { boxShadow: "inset 0 0 0 10px rgba(255, 99, 71, 0.5)" },
+          "100%": { boxShadow: "inset 0 0 0 0 rgba(255, 99, 71, 0.5)" },
         },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
-        scroll: "scroll 5s ease-in-out forwards",
+        pulsate: "pulsate 1.5s infinite",
       },
     },
   },
