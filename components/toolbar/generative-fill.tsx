@@ -11,9 +11,11 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Crop } from "lucide-react"
 import { useLayerStore } from "@/lib/layer-store"
+import { Badge } from "../ui/badge"
+import { AnimatePresence, motion } from "framer-motion"
 
-const PREVIEW_SIZE = 200
-const POPOVER_HEIGHT = 400
+const PREVIEW_SIZE = 250
+const EXPANSION_THRESHOLD = 250 // px
 
 export default function GenerativeFill() {
   const setGenerating = useImageStore((state) => state.setGenerating)
@@ -40,7 +42,6 @@ export default function GenerativeFill() {
       backgroundSize: `${activeLayer.width * scale}px ${
         activeLayer.height * scale
       }px`,
-
       backgroundPosition: "center",
       backgroundRepeat: "no-repeat",
       position: "relative" as const,
@@ -66,10 +67,10 @@ export default function GenerativeFill() {
       left: "0",
       right: "0",
       bottom: "0",
-      boxShadow: `inset ${leftWidth} ${topHeight} 0 rgb(255, 99, 71), 
-                  inset -${rightWidth} ${topHeight} 0 rgb(255, 99, 71), 
-                  inset ${leftWidth} -${bottomHeight} 0 rgb(255, 99, 71), 
-                  inset -${rightWidth} -${bottomHeight} 0 rgba(0,0,0,0.5)`,
+      boxShadow: `inset ${leftWidth} ${topHeight} 0 rgba(48, 119, 255, 1), 
+                  inset -${rightWidth} ${topHeight} 0 rgba(48, 119, 255, 1), 
+                  inset ${leftWidth} -${bottomHeight} 0 rgba(48, 119, 255, 1), 
+                  inset -${rightWidth} -${bottomHeight} 0 rgba(48, 119, 255,1)`,
     }
   }, [activeLayer, width, height])
 
@@ -101,6 +102,44 @@ export default function GenerativeFill() {
     }
   }
 
+  const ExpansionIndicator = ({
+    value,
+    axis,
+  }: {
+    value: number
+    axis: "x" | "y"
+  }) => {
+    const isVisible = Math.abs(value) >= EXPANSION_THRESHOLD
+    const position =
+      axis === "x"
+        ? {
+            top: "50%",
+            [value > 0 ? "right" : "left"]: 0,
+            transform: "translateY(-50%)",
+          }
+        : {
+            left: "50%",
+            [value > 0 ? "bottom" : "top"]: 0,
+            transform: "translateX(-50%)",
+          }
+
+    return (
+      <AnimatePresence>
+        {isVisible && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.5 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.5 }}
+            className="absolute bg-primary text-white px-2 py-1 rounded-md text-xs font-bold"
+            style={position}
+          >
+            {Math.abs(value)}px
+          </motion.div>
+        )}
+      </AnimatePresence>
+    )
+  }
+
   return (
     <div className="">
       <Popover>
@@ -112,67 +151,58 @@ export default function GenerativeFill() {
             </span>
           </Button>
         </PopoverTrigger>
-        <PopoverContent
-          className="w-80"
-          style={{ height: `${POPOVER_HEIGHT}px`, overflowY: "auto" }}
-        >
-          <div className="grid gap-4">
+        <PopoverContent className="w-80">
+          <div className="flex flex-col h-full">
             <div className="space-y-2">
-              <h4 className="font-medium leading-none">Generative Fill</h4>
+              <h4 className="font-medium text-center py-2 leading-none">
+                Generative Fill
+              </h4>
               {activeLayer.width && activeLayer.height ? (
-                <>
-                  <p>
-                    Current Size: {activeLayer.width}X{activeLayer.height}
-                  </p>
-                  <p>
-                    New Size: {activeLayer.width + width}X
-                    {activeLayer.height + height}
-                  </p>
-                </>
+                <div className="flex justify-evenly">
+                  <div className="flex flex-col items-center">
+                    <span className="text-xs">Current Size:</span>
+                    <p className="text-sm text-primary font-bold">
+                      {activeLayer.width}X{activeLayer.height}
+                    </p>
+                  </div>
+                  <div className="flex flex-col items-center">
+                    <span className="text-xs">New Size:</span>
+                    <p className="text-sm text-primary font-bold">
+                      <Popover>
+                        <PopoverTrigger>
+                          {activeLayer.width + width}
+                        </PopoverTrigger>
+                        <PopoverContent>
+                          <Input name="width" type="number" />
+                        </PopoverContent>
+                      </Popover>
+                      X{activeLayer.height + height}
+                    </p>
+                  </div>
+                </div>
               ) : null}
             </div>
-
-            <div className="">
-              <Label htmlFor="maxWidth">Modify Width</Label>
-              <div className="flex gap-2">
+            <div className="flex gap-2 items-center justify-center">
+              <div className="text-center">
+                <Label htmlFor="maxWidth">Modify Width</Label>
                 <Input
                   name="width"
                   type="range"
-                  min={-activeLayer.width + 1}
                   max={activeLayer.width}
                   value={width}
                   onChange={(e) => setWidth(parseInt(e.target.value))}
                   className="h-8"
                 />
-                <Input
-                  name="width"
-                  type="number"
-                  value={width}
-                  onChange={(e) => {
-                    setWidth(parseInt(e.target.value))
-                  }}
-                  className="col-span-2 h-8"
-                />
               </div>
-            </div>
-            <div className="">
-              <Label htmlFor="maxHeight">Modify Height</Label>
-              <div className="flex gap-2">
+              <div className="text-center">
+                <Label htmlFor="maxHeight">Modify Height</Label>
                 <Input
                   name="height"
                   type="range"
-                  min={-activeLayer.height + 1}
+                  min={-activeLayer.height + 100}
                   max={activeLayer.height}
                   value={height}
-                  onChange={(e) => setHeight(parseInt(e.target.value))}
-                  className="h-8"
-                />
-                <Input
-                  name="height"
-                  type="number"
-                  min={-activeLayer.height + 1}
-                  max={activeLayer.height}
-                  value={height}
+                  step={2}
                   onChange={(e) => setHeight(parseInt(e.target.value))}
                   className="h-8"
                 />
@@ -180,7 +210,7 @@ export default function GenerativeFill() {
             </div>
             {/* Preview */}
             <div
-              className="preview-container"
+              className="preview-container flex-grow"
               style={{
                 width: `${PREVIEW_SIZE}px`,
                 height: `${PREVIEW_SIZE}px`,
@@ -189,22 +219,25 @@ export default function GenerativeFill() {
                 alignItems: "center",
                 overflow: "hidden",
                 margin: "auto",
-                backgroundColor: "black",
               }}
             >
               <div style={previewStyle}>
-                <div style={previewOverlayStyle}></div>
+                <div
+                  className="animate-pulsate"
+                  style={previewOverlayStyle}
+                ></div>
+                <ExpansionIndicator value={width} axis="x" />
+                <ExpansionIndicator value={height} axis="y" />
               </div>
             </div>
+            <Button
+              className="w-full mt-4"
+              disabled={!activeLayer.url || (!width && !height) || generating}
+              onClick={handleGenFill}
+            >
+              {generating ? "Generating" : "Generative Fill 🎨"}
+            </Button>
           </div>
-
-          <Button
-            className="w-full mt-4"
-            disabled={!activeLayer.url || (!width && !height) || generating}
-            onClick={handleGenFill}
-          >
-            {generating ? "Generating" : "Generative Fill 🎨"}
-          </Button>
         </PopoverContent>
       </Popover>
     </div>

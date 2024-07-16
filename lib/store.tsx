@@ -47,9 +47,7 @@ const getStore = (initialState: {
     tags: [],
     activeTag: initialState.activeTag,
     setTags: (tags) => set({ tags }),
-
     setActiveTag: (tag) => set({ activeTag: tag }),
-
     activeColor: initialState.activeColor,
     setActiveColor: (color) => set({ activeColor: color }),
     generating: false,

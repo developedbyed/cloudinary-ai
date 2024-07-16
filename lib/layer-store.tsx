@@ -31,6 +31,9 @@ type Layer = {
   count: number
   name?: string
   format?: string
+  poster?: string
+  resourceType?: string
+  transcriptionURL?: string
 }
 
 type State = {
@@ -40,6 +43,8 @@ type State = {
   setActiveLayer: (count: number) => void
   activeLayer: Layer
   updateLayer: (layer: Layer) => void
+  setPoster: (count: number, posterUrl: string) => void
+  setTranscription: (count: number, transcriptionURL: string) => void
 }
 
 const getStore = (initialState: { layers: Layer[] }) => {
@@ -55,13 +60,27 @@ const getStore = (initialState: { layers: Layer[] }) => {
         activeLayer: state.layers.find((l) => l.count === count),
       })),
     activeLayer: initialState.layers[0],
+
     updateLayer: (layer) =>
       set((state) => {
         const layers = state.layers.map((l) =>
           l.count === layer.count ? layer : l
         )
+
         return { layers }
       }),
+    setPoster: (count: number, posterUrl: string) =>
+      set((state) => ({
+        layers: state.layers.map((l) =>
+          l.count === count ? { ...l, poster: posterUrl } : l
+        ),
+      })),
+    setTranscription: (count: number, transcriptionURL: string) =>
+      set((state) => ({
+        layers: state.layers.map((l) =>
+          l.count === count ? { ...l, transcriptionURL } : l
+        ),
+      })),
   }))
 }
 

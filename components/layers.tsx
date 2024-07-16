@@ -31,9 +31,9 @@ export default function Layers() {
   return (
     <motion.div
       layout
-      className="flex flex-col justify-between  gap-2 w-[480px] h-[500px] overflow-y-auto overflow-x-hidden relative "
+      className="w-[480px] h-[500px] overflow-y-auto overflow-x-hidden relative "
     >
-      <motion.div className="flex-1">
+      <motion.div className="flex-1 flex flex-col  gap-2">
         <AnimatePresence>
           {layers.map((layer, index) => (
             <MCard
@@ -67,7 +67,11 @@ export default function Layers() {
                         <Image
                           className="w-full object-contain rounded-sm"
                           alt={"layer"}
-                          src={layer.url}
+                          src={
+                            layer.format === "mp4"
+                              ? layer.poster || layer.url
+                              : layer.url
+                          }
                           width={50}
                           height={50}
                         />
@@ -128,27 +132,26 @@ export default function Layers() {
             </MCard>
           ))}
         </AnimatePresence>
+        <MButton
+          layout
+          onClick={(e) => {
+            addLayer({
+              count: layers[layers.length - 1].count + 1,
+              url: "",
+              height: 0,
+              width: 0,
+              publicId: "",
+              name: "",
+              format: "",
+            })
+          }}
+          variant={"outline"}
+          className="sticky bottom-0 flex gap-2  w-full py-2"
+        >
+          <span className="text-xs">Create Layer</span>{" "}
+          <Layers2 className="text-secondary-foreground" size={18} />
+        </MButton>
       </motion.div>
-
-      <MButton
-        layout
-        onClick={(e) => {
-          addLayer({
-            count: layers[layers.length - 1].count + 1,
-            url: "",
-            height: 0,
-            width: 0,
-            publicId: "",
-            name: "",
-            format: "",
-          })
-        }}
-        variant={"outline"}
-        className="sticky bottom-0 flex gap-2 shadow-lg"
-      >
-        <span className="text-xs">Create Layer</span>{" "}
-        <Layers2 className="text-secondary-foreground" size={18} />
-      </MButton>
     </motion.div>
   )
 }

@@ -4,72 +4,82 @@ import { uploadImage } from "@/server/upload-image"
 import { useImageStore } from "@/lib/store"
 import { useDropzone } from "react-dropzone"
 import Lottie from "lottie-react"
-import cloudAnimation from "@/public/animations/cloud-animation.json"
 import { Card, CardContent } from "../ui/card"
 import { cn } from "@/lib/utils"
 import { useLayerStore } from "@/lib/layer-store"
+import imageAnimation from "@/public/animations/image-upload.json"
+import { toast } from "sonner"
+import { Button } from "../ui/button"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { Label } from "../ui/label"
+import { ImageIcon, VideoIcon } from "lucide-react"
+import { useState } from "react"
+import UploadImage from "./upload-image"
+import UploadVideo from "./upload-video"
 
 export default function UploadForm() {
-  const setTags = useImageStore((state) => state.setTags)
-  const setGenerating = useImageStore((state) => state.setGenerating)
   const activeLayer = useLayerStore((state) => state.activeLayer)
-  const updateLayer = useLayerStore((state) => state.updateLayer)
-  const setActiveLayer = useLayerStore((state) => state.setActiveLayer)
-  console.log(activeLayer.count + "active")
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop: async (acceptedFiles) => {
-      const formData = new FormData()
-      formData.append("image", acceptedFiles[0])
-      //Generate Object url
-      const objectUrl = URL.createObjectURL(acceptedFiles[0])
-      setGenerating(true)
-      activeLayer.url = objectUrl
-      const res = await uploadImage({ image: formData })
-
-      if (res?.data?.success) {
-        updateLayer({
-          count: activeLayer.count,
-          url: res.data.success.url,
-          width: res.data.success.width,
-          height: res.data.success.height,
-          name: res.data.success.original_filename,
-          publicId: res.data.success.public_id,
-          format: res.data.success.format,
-        })
-        setTags(res.data.success.tags)
-
-        setActiveLayer(activeLayer.count)
-        setGenerating(false)
-      }
-      if (res?.data?.error) {
-        setGenerating(false)
-      }
-    },
-  })
-
+  const [selectedType, setSelectedType] = useState("image")
   if (!activeLayer.url)
     return (
-      <Card
-        {...getRootProps()}
-        className={cn(
-          `hover:cursor-pointer hover:bg-secondary hover:border-primary transition-all  ease-in-out w-full h-full`,
-          `${isDragActive ? "animate-pulse border-primary bg-secondary" : ""}`
-        )}
-      >
-        <CardContent className="flex flex-col h-full items-center justify-center px-2 py-24  text-xs ">
-          <input {...getInputProps()} />
-          <div className="flex items-center flex-col justify-center gap-4">
-            <Lottie className="h-48" animationData={cloudAnimation} />
-            <p className="text-muted-foreground text-2xl">
-              {isDragActive
-                ? "Drop your image here!"
-                : "Start by uploading an image"}
-            </p>
-            <p className="text-muted-foreground">
-              Supported Formats .jpeg .jpg .png .webp
-            </p>
-          </div>
-        </CardContent>
-      </Card>
+      <div className="w-full h-full">
+        {selectedType === "image" ? <UploadImage /> : null}
+        {selectedType === "video" ? <UploadVideo /> : null}
+
+        <RadioGroup
+          defaultValue="image"
+          onValueChange={(e) => {
+            setSelectedType(e)
+          }}
+          className="flex items-center justify-center gap-8 py-8"
+        >
+          <Card
+            onClick={(e) => setSelectedType("image")}
+            className={cn(
+              "flex flex-col items-center justify-center py-4 px-6 gap-4 cursor-pointer",
+              selectedType === "image" ? "border-primary" : null
+            )}
+          >
+            <CardContent className="flex items-center  space-x-2 p-0">
+              <RadioGroupItem value="image" id="image-mode" hidden />
+              <Label
+                className={`${
+                  selectedType === "image" ? "text-primary" : null
+                }`}
+                htmlFor="image-mode"
+              >
+                Image Mode
+              </Label>
+            </CardContent>
+            <ImageIcon
+              className={`${selectedType === "image" ? "text-primary" : null}`}
+              size={36}
+            />
+          </Card>
+          <Card
+            onClick={(e) => setSelectedType("video")}
+            className={cn(
+              "flex flex-col items-center justify-center p-4 gap-4 cursor-pointer",
+              selectedType === "video" ? "border-primary" : null
+            )}
+          >
+            <CardContent className="flex items-center  space-x-2 p-0">
+              <RadioGroupItem value="video" id="video-mode" hidden />
+              <Label
+                className={`${
+                  selectedType === "video" ? "text-primary" : null
+                }`}
+                htmlFor="video-mode"
+              >
+                Video Mode
+              </Label>
+            </CardContent>
+            <VideoIcon
+              className={`${selectedType === "video" ? "text-primary" : null}`}
+              size={36}
+            />
+          </Card>
+        </RadioGroup>
+      </div>
     )
 }
