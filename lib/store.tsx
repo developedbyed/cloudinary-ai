@@ -1,6 +1,7 @@
 import { createStore } from "zustand/vanilla"
 import { StoreApi, useStore } from "zustand"
 import React from "react"
+import { persist, createJSONStorage } from "zustand/middleware"
 
 const createZustandContext = <TInitial, TStore extends StoreApi<any>>(
   getStore: (initial: TInitial) => TStore
@@ -32,10 +33,6 @@ type State = {
   setActiveColor: (color: string) => void
   generating: boolean
   setGenerating: (generating: boolean) => void
-  xCrop: number
-  yCrop: number
-  setXCrop: (xCrop: number) => void
-  setYCrop: (yCrop: number) => void
 }
 
 const getStore = (initialState: {
@@ -43,20 +40,24 @@ const getStore = (initialState: {
   activeColor: string
   activeImage: string
 }) => {
-  return createStore<State>()((set) => ({
-    tags: [],
-    activeTag: initialState.activeTag,
-    setTags: (tags) => set({ tags }),
-    setActiveTag: (tag) => set({ activeTag: tag }),
-    activeColor: initialState.activeColor,
-    setActiveColor: (color) => set({ activeColor: color }),
-    generating: false,
-    setGenerating: (generating) => set({ generating }),
-    xCrop: 0,
-    yCrop: 0,
-    setXCrop: (xCrop) => set({ xCrop }),
-    setYCrop: (yCrop) => set({ yCrop }),
-  }))
+  return createStore<State>()(
+    persist(
+      (set) => ({
+        tags: [],
+        activeTag: initialState.activeTag,
+        setTags: (tags) => set({ tags }),
+        setActiveTag: (tag) => set({ activeTag: tag }),
+        activeColor: initialState.activeColor,
+        setActiveColor: (color) => set({ activeColor: color }),
+        generating: false,
+        setGenerating: (generating) => set({ generating }),
+      }),
+      {
+        name: "image-storage",
+        storage: createJSONStorage(() => localStorage),
+      }
+    )
+  )
 }
 
 export const ImageStore = createZustandContext(getStore)

@@ -31,87 +31,88 @@ export default function GenRemove() {
   const layers = useLayerStore((state) => state.layers)
   const setActiveLayer = useLayerStore((state) => state.setActiveLayer)
   return (
-    <div className="">
-      <Popover>
-        <PopoverTrigger disabled={!activeLayer?.url} asChild>
-          <Button variant="outline">
-            <span className="flex gap-2 items-center justify-center">
-              <Eraser size={18} /> Smart AI Remove
-            </span>
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="w-80">
-          <div className="grid gap-4">
-            <div className="space-y-2">
-              <h4 className="font-medium leading-none">Smart AI Remove</h4>
-              <p className="text-sm text-muted-foreground">
-                Generative Remove any part of the image
-              </p>
+    <Popover>
+      <PopoverTrigger disabled={!activeLayer?.url} asChild>
+        <Button variant="outline" className="p-8">
+          <span className="flex gap-1 items-center justify-center flex-col text-xs font-medium">
+            Content Aware <Eraser size={20} />
+          </span>
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-full">
+        <div className="grid gap-4">
+          <div className="space-y-2">
+            <h4 className="font-medium leading-none">Smart AI Remove</h4>
+            <p className="text-sm text-muted-foreground">
+              Generative Remove any part of the image
+            </p>
+          </div>
+          <div className="grid gap-2">
+            <h3 className="text-xs">Suggested selections</h3>
+            <div className="flex gap-2">
+              {tags.length === 0 && (
+                <p className="text-xs text-muted-foreground">
+                  No tags available
+                </p>
+              )}
+              {tags.map((tag) => (
+                <Badge
+                  key={tag}
+                  onClick={() => setActiveTag(tag)}
+                  className={cn(
+                    "px-2 py-1 rounded text-xs",
+                    activeTag === tag && "bg-primary text-white"
+                  )}
+                >
+                  {tag}
+                </Badge>
+              ))}
             </div>
-            <div className="grid gap-2">
-              <h3 className="text-xs">Suggested selections</h3>
-              <div className="flex gap-2">
-                {tags.length === 0 && (
-                  <p className="text-xs text-muted-foreground">
-                    No tags available
-                  </p>
-                )}
-                {tags.map((tag) => (
-                  <Badge
-                    key={tag}
-                    onClick={() => setActiveTag(tag)}
-                    className={cn(
-                      "px-2 py-1 rounded text-xs",
-                      activeTag === tag && "bg-primary text-white"
-                    )}
-                  >
-                    {tag}
-                  </Badge>
-                ))}
-              </div>
-              <div className="grid grid-cols-3 items-center gap-4">
-                <Label htmlFor="width">Selection</Label>
-                <Input
-                  className="col-span-2 h-8"
-                  value={activeTag}
-                  name="tag"
-                  onChange={(e) => {
-                    setActiveTag(e.target.value)
-                  }}
-                />
-              </div>
+            <div className="grid grid-cols-3 items-center gap-4">
+              <Label htmlFor="width">Selection</Label>
+              <Input
+                className="col-span-2 h-8"
+                value={activeTag}
+                name="tag"
+                onChange={(e) => {
+                  setActiveTag(e.target.value)
+                }}
+              />
             </div>
           </div>
-          <Button
-            className="w-full mt-4"
-            disabled={
-              !activeTag || !activeColor || !activeLayer.url || generating
-            }
-            onClick={async () => {
-              setGenerating(true)
-              const res = await genRemove({
-                activeImage: activeLayer.url!,
-                prompt: activeTag,
+        </div>
+        <Button
+          className="w-full mt-4"
+          disabled={
+            !activeTag || !activeColor || !activeLayer.url || generating
+          }
+          onClick={async () => {
+            setGenerating(true)
+            const res = await genRemove({
+              activeImage: activeLayer.url!,
+              prompt: activeTag,
+            })
+            if (res?.data?.success) {
+              setGenerating(false)
+
+              const newLayerId = crypto.randomUUID()
+              addLayer({
+                id: newLayerId,
+                url: res.data.success,
+                format: activeLayer.format,
+                height: activeLayer.height,
+                width: activeLayer.width,
+                name: activeLayer.name,
+                publicId: activeLayer.publicId,
+                resourceType: "image",
               })
-              if (res?.data?.success) {
-                addLayer({
-                  count: layers.length + 1,
-                  url: res.data.success,
-                  format: activeLayer.format,
-                  height: activeLayer.height,
-                  width: activeLayer.width,
-                  name: activeLayer.name,
-                  publicId: activeLayer.publicId,
-                })
-                setGenerating(false)
-                setActiveLayer(layers.length + 1)
-              }
-            }}
-          >
-            Magic Remove 🎨
-          </Button>
-        </PopoverContent>
-      </Popover>
-    </div>
+              setActiveLayer(newLayerId)
+            }
+          }}
+        >
+          Magic Remove 🎨
+        </Button>
+      </PopoverContent>
+    </Popover>
   )
 }

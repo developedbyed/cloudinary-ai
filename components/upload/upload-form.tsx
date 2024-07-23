@@ -1,15 +1,8 @@
 "use client"
 
-import { uploadImage } from "@/server/upload-image"
-import { useImageStore } from "@/lib/store"
-import { useDropzone } from "react-dropzone"
-import Lottie from "lottie-react"
 import { Card, CardContent } from "../ui/card"
 import { cn } from "@/lib/utils"
 import { useLayerStore } from "@/lib/layer-store"
-import imageAnimation from "@/public/animations/image-upload.json"
-import { toast } from "sonner"
-import { Button } from "../ui/button"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Label } from "../ui/label"
 import { ImageIcon, VideoIcon } from "lucide-react"
@@ -20,9 +13,12 @@ import UploadVideo from "./upload-video"
 export default function UploadForm() {
   const activeLayer = useLayerStore((state) => state.activeLayer)
   const [selectedType, setSelectedType] = useState("image")
-  if (!activeLayer.url)
+  const layerComparisonMode = useLayerStore(
+    (state) => state.layerComparisonMode
+  )
+  if (!activeLayer.url && !layerComparisonMode)
     return (
-      <div className="w-full h-full">
+      <div className="w-full p-24 flex flex-col  justify-center  h-full">
         {selectedType === "image" ? <UploadImage /> : null}
         {selectedType === "video" ? <UploadVideo /> : null}
 

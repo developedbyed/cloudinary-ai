@@ -35,8 +35,9 @@ export default function UploadVideo() {
         if (res?.data?.success) {
           const videoUrl = res.data.success.url
           const thumbnailUrl = videoUrl.replace(/\.[^/.]+$/, ".jpg")
+          console.log(res.data.success)
           updateLayer({
-            count: activeLayer.count,
+            id: activeLayer.id,
             url: res.data.success.url,
             width: res.data.success.width,
             height: res.data.success.height,
@@ -47,7 +48,7 @@ export default function UploadVideo() {
             resourceType: res.data.success.resource_type,
           })
           setTags(res.data.success.tags)
-          setActiveLayer(activeLayer.count)
+          setActiveLayer(activeLayer.id)
           console.log(res.data.success)
           setGenerating(false)
         }

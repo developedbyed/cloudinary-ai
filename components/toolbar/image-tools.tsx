@@ -3,16 +3,17 @@
 import AIRecolor from "@/components/toolbar/recolor"
 import GenerativeFill from "@/components/toolbar/generative-fill"
 import GenRemove from "@/components/toolbar/gen-remove"
-import { useLayerStore } from "@/lib/layer-store"
+import { ModeToggle } from "../toggle"
 
 export default function ImageTools() {
-  const activeLayer = useLayerStore((state) => state.activeLayer)
-  if (activeLayer.resourceType === "image")
-    return (
-      <>
-        <AIRecolor />
-        <GenerativeFill />
-        <GenRemove />
-      </>
-    )
+  return (
+    <div className="py-12 px-4 flex flex-col gap-4">
+      <div className="pb-12 text-center">
+        <ModeToggle />
+      </div>
+      <AIRecolor />
+      <GenerativeFill />
+      <GenRemove />
+    </div>
+  )
 }

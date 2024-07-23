@@ -7,6 +7,7 @@ import { LayerStore } from "@/lib/layer-store"
 import Layers from "./layers"
 import ImageTools from "./toolbar/image-tools"
 import VideoTools from "./toolbar/video-tools"
+import { ModeToggle } from "./toggle"
 
 export default function Editor() {
   return (
@@ -19,9 +20,10 @@ export default function Editor() {
     >
       <LayerStore.Provider
         initialValue={{
+          layerComparisonMode: false,
           layers: [
             {
-              count: 1,
+              id: crypto.randomUUID(),
               url: "",
               height: 0,
               width: 0,
@@ -30,18 +32,12 @@ export default function Editor() {
           ],
         }}
       >
-        <div className="">
-          <div>
-            <div className="flex gap-4 my-4  justify-center py-4">
-              <ImageTools />
-              <VideoTools />
-            </div>
-            <div className="flex gap-4 w-full">
-              <ActiveImage />
-              <UploadForm />
-              <Layers />
-            </div>
-          </div>
+        <div className="flex h-full">
+          {/* <VideoTools /> */}
+          <ImageTools />
+          <ActiveImage />
+          <UploadForm />
+          <Layers />
         </div>
       </LayerStore.Provider>
     </ImageStore.Provider>

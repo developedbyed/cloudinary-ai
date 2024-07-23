@@ -34,7 +34,7 @@ export default function UploadImage() {
         setGenerating(true)
 
         updateLayer({
-          count: activeLayer.count,
+          id: activeLayer.id,
           url: objectUrl,
           width: 0,
           height: 0,
@@ -43,12 +43,12 @@ export default function UploadImage() {
           format: "",
           resourceType: "image",
         })
-        setActiveLayer(activeLayer.count)
+        setActiveLayer(activeLayer.id)
         const res = await uploadImage({ image: formData })
 
         if (res?.data?.success) {
           updateLayer({
-            count: activeLayer.count,
+            id: activeLayer.id,
             url: res.data.success.url,
             width: res.data.success.width,
             height: res.data.success.height,
@@ -59,7 +59,7 @@ export default function UploadImage() {
           })
           setTags(res.data.success.tags)
 
-          setActiveLayer(activeLayer.count)
+          setActiveLayer(activeLayer.id)
           console.log(activeLayer)
           setGenerating(false)
         }

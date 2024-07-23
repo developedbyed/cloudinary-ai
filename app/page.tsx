@@ -3,7 +3,7 @@ import Image from "next/image"
 
 export default function Home() {
   return (
-    <main className="p-24 ">
+    <main className="h-full">
       <Editor />
     </main>
   )

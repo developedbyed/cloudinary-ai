@@ -75,15 +75,21 @@ const config = {
           "0%": { opacity: "0.3" },
           "100%": { opacity: "0.5" },
         },
+        wiggle: {
+          "0%": { transform: " scale(1) " },
+          "100%": { transform: " scale(1) " },
+          "50%": { transform: " scale(0.95)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         pulsate: "pulsate 1.5s infinite alternate ease-in-out",
+        wiggle: "wiggle 1s ease-in-out infinite",
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [require("tailwindcss-animate"), require("tailwind-scrollbar")],
 } satisfies Config
 
 export default config
