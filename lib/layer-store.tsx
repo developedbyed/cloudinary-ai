@@ -108,7 +108,6 @@ const getStore = (initialState: {
             const newComparedLayers = state.comparedLayers.includes(id)
               ? state.comparedLayers.filter((layerId) => layerId !== id)
               : [...state.comparedLayers, id].slice(-2)
-            console.log(newComparedLayers)
             return {
               comparedLayers: newComparedLayers,
               layerComparisonMode: newComparedLayers.length > 0,

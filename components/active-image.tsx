@@ -60,7 +60,7 @@ export default function ActiveImage() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="w-full relative h-[650px] bg-secondary flex items-center justify-center"
+        className="w-full relative h-svh p-24 bg-secondary flex flex-col items-center justify-center"
       >
         <ImageComparison layers={comparisonLayers} />
       </motion.div>

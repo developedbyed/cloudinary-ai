@@ -1,46 +1,29 @@
 "use client"
-import { ImageStore } from "@/lib/store"
 import UploadForm from "./upload/upload-form"
 import ActiveImage from "./active-image"
-
-import { LayerStore } from "@/lib/layer-store"
+import { useLayerStore } from "@/lib/layer-store"
 import Layers from "./layers"
 import ImageTools from "./toolbar/image-tools"
 import VideoTools from "./toolbar/video-tools"
 import { ModeToggle } from "./toggle"
 
 export default function Editor() {
+  const activeImage = useLayerStore((state) => state.activeLayer)
   return (
-    <ImageStore.Provider
-      initialValue={{
-        activeTag: "all",
-        activeColor: "green",
-        activeImage: "",
-      }}
-    >
-      <LayerStore.Provider
-        initialValue={{
-          layerComparisonMode: false,
-          layers: [
-            {
-              id: crypto.randomUUID(),
-              url: "",
-              height: 0,
-              width: 0,
-              publicId: "",
-            },
-          ],
-        }}
-      >
-        <div className="flex h-full">
-          {/* <VideoTools /> */}
-          <ImageTools />
-          <ActiveImage />
-          <UploadForm />
-          <Layers />
+    <div className="flex h-full ">
+      <div className="py-6 px-4  min-w-48 ">
+        <div className="pb-12 text-center">
+          <ModeToggle />
         </div>
-      </LayerStore.Provider>
-    </ImageStore.Provider>
+        <div className="flex flex-col gap-4 ">
+          {activeImage.resourceType === "video" ? <VideoTools /> : null}
+          {activeImage.resourceType === "image" ? <ImageTools /> : null}
+        </div>
+      </div>
+
+      <ActiveImage />
+      <UploadForm />
+      <Layers />
+    </div>
   )
 }
-// https://res.cloudinary.com/restyled/image/upload/v1719765196/restyled/ec7fbftqo0cqxilfaz80.jpg

@@ -9,7 +9,7 @@ export default function LayerImage({ layer }: { layer: Layer }) {
       <>
         <div className="w-12 h-12 flex items-center justify-center ">
           <Image
-            className="w-full object-contain rounded-sm"
+            className="w-full object-contain h-full rounded-sm"
             alt={"layer"}
             src={layer.format === "mp4" ? layer.poster || layer.url : layer.url}
             width={50}

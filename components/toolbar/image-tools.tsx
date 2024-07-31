@@ -7,13 +7,10 @@ import { ModeToggle } from "../toggle"
 
 export default function ImageTools() {
   return (
-    <div className="py-12 px-4 flex flex-col gap-4">
-      <div className="pb-12 text-center">
-        <ModeToggle />
-      </div>
+    <>
       <AIRecolor />
       <GenerativeFill />
       <GenRemove />
-    </div>
+    </>
   )
 }
