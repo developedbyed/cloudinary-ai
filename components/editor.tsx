@@ -6,6 +6,7 @@ import Layers from "./layers"
 import ImageTools from "./toolbar/image-tools"
 import VideoTools from "./toolbar/video-tools"
 import { ModeToggle } from "./toggle"
+import GenerativeFill from "./toolbar/generative-fill"
 
 export default function Editor() {
   const activeImage = useLayerStore((state) => state.activeLayer)
