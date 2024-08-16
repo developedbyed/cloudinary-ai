@@ -63,7 +63,7 @@ const getStore = (initialState: {
         layers: initialState.layers,
         addLayer: (layer) =>
           set((state) => ({
-            layers: [...state.layers, { ...layer, id: crypto.randomUUID() }],
+            layers: [...state.layers, { ...layer }],
           })),
         removeLayer: (id: string) =>
           set((state) => ({

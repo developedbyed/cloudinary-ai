@@ -2,8 +2,6 @@ import { useImageStore } from "@/lib/store"
 import Image from "next/image"
 import { cn } from "@/lib/utils"
 import { Layer, useLayerStore } from "@/lib/layer-store"
-import Lottie from "lottie-react"
-import AiAnimation from "@/public/animations/ai-generating.json"
 import { motion } from "framer-motion"
 import ImageComparison from "./layers/image-comparison"
 
@@ -19,14 +17,7 @@ export default function ActiveImage() {
   if (!activeLayer.url && comparedLayers.length === 0) return null
 
   const renderLayer = (layer: Layer) => (
-    <div className="relative w-full h-full ">
-      {generating && (
-        <div className="absolute w-full h-full flex flex-col gap-4 items-center justify-center bg-black opacity-75 animate-pulse z-10">
-          <p className="text-2xl font-medium">Applying fancy effects</p>
-          <p>{layer.name}</p>
-          <Lottie animationData={AiAnimation} />
-        </div>
-      )}
+    <div className="relative w-full h-full flex items-center justify-center">
       {layer.resourceType === "image" && (
         <Image
           alt={layer.name || "Image"}

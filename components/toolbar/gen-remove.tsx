@@ -28,7 +28,6 @@ export default function GenRemove() {
   const setGenerating = useImageStore((state) => state.setGenerating)
   const activeLayer = useLayerStore((state) => state.activeLayer)
   const addLayer = useLayerStore((state) => state.addLayer)
-  const layers = useLayerStore((state) => state.layers)
   const setActiveLayer = useLayerStore((state) => state.setActiveLayer)
   return (
     <Popover>

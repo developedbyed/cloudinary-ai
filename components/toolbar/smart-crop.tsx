@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/popover"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Crop, Square } from "lucide-react"
+import { Crop, RefreshCcw, ScanFace, Square } from "lucide-react"
 import { useLayerStore } from "@/lib/layer-store"
 import { genCrop } from "@/server/smart-crop"
 import { toast } from "sonner"
@@ -43,6 +43,7 @@ export default function SmartCrop() {
       aspect: aspectRatio,
       activeVideo: activeLayer.url!,
     })
+
     if (res?.data?.success) {
       console.log(res.data.success)
       setGenerating(false)
@@ -72,7 +73,7 @@ export default function SmartCrop() {
     <Popover>
       <PopoverTrigger disabled={!activeLayer?.url} asChild>
         <Button variant="outline" className="py-8">
-          <span className="flex gap-1 items-center justify-center flex-col text-xs font-medium">
+          <span className="flex gap-1 items-center  flex-col text-xs font-medium">
             Smart Crop
             <Crop size={18} />
           </span>
@@ -139,51 +140,7 @@ export default function SmartCrop() {
               </CardContent>
             </Card>
           </div>
-          <h4 className="text-md font-medium pb-2">Focus on</h4>
-          <div className={"flex gap-4 items-center justify-center pb-2"}>
-            <Card
-              className={cn(
-                aspectRatio === "1:1" ? " border-primary" : "",
-                "p-4 w-36 cursor-pointer"
-              )}
-              onClick={() => setAspectRatio("1:1")}
-            >
-              <CardHeader className="p-0 text-center">
-                <CardTitle className="text-md">Auto</CardTitle>
-              </CardHeader>
-              <CardContent className="flex items-center justify-center p-0 pt-2">
-                <Square className="w-10 h-10" />
-              </CardContent>
-            </Card>
-            <Card
-              className={cn(
-                aspectRatio === "1:1" ? " border-primary" : "",
-                "p-4 w-36 cursor-pointer"
-              )}
-              onClick={() => setAspectRatio("1:1")}
-            >
-              <CardHeader className="p-0 text-center">
-                <CardTitle className="text-md">Face</CardTitle>
-              </CardHeader>
-              <CardContent className="flex items-center justify-center p-0 pt-2">
-                <Square className="w-10 h-10" />
-              </CardContent>
-            </Card>
-            <Card
-              className={cn(
-                aspectRatio === "1:1" ? " border-primary" : "",
-                "p-4 w-36 cursor-pointer"
-              )}
-              onClick={() => setAspectRatio("1:1")}
-            >
-              <CardHeader className="p-0 text-center">
-                <CardTitle className="text-md">Subject</CardTitle>
-              </CardHeader>
-              <CardContent className="flex items-center justify-center p-0 pt-2">
-                <Square className="w-10 h-10" />
-              </CardContent>
-            </Card>
-          </div>
+
           <Button
             onClick={handleGenCrop}
             className="w-full mt-4"

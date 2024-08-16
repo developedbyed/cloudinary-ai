@@ -10,10 +10,9 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_SECRET,
 })
 
-const genFillSchema = z.object({
-  activeVideo: z.string(),
-  aspect: z.string(),
-  height: z.string(),
+const recolorSchema = z.object({
+  activeImage: z.string(),
+  format: z.string(),
 })
 
 async function checkImageProcessing(url: string) {
@@ -28,18 +27,21 @@ async function checkImageProcessing(url: string) {
   }
 }
 
-export const genCrop = actionClient
-  .schema(genFillSchema)
-  .action(async ({ parsedInput: { activeVideo, aspect, height } }) => {
-    const parts = activeVideo.split("/upload/")
-    //https://res.cloudinary.com/demo/image/upload/ar_16:9,b_gen_fill,c_pad,w_1500/docs/moped.jpg
-    const fillUrl = `${parts[0]}/upload/ar_${aspect},c_fill,g_auto,h_${height}/${parts[1]}`
+export const bgRemoval = actionClient
+  .schema(recolorSchema)
+  .action(async ({ parsedInput: { activeImage, format } }) => {
+    const form = activeImage.split(format)
+    const pngConvert = form[0] + "png"
+    const parts = pngConvert.split("/upload/")
+    const removeUrl = `${parts[0]}/upload/e_background_removal/${parts[1]}`
+
     // Poll the URL to check if the image is processed
     let isProcessed = false
     const maxAttempts = 20
     const delay = 1000 // 1 second
     for (let attempt = 0; attempt < maxAttempts; attempt++) {
-      isProcessed = await checkImageProcessing(fillUrl)
+      isProcessed = await checkImageProcessing(removeUrl)
+      console.log(removeUrl)
       if (isProcessed) {
         break
       }
@@ -47,7 +49,8 @@ export const genCrop = actionClient
     }
 
     if (!isProcessed) {
-      return { error: "Video processing failed" }
+      throw new Error("Image processing timed out")
     }
-    return { success: fillUrl }
+    console.log(removeUrl)
+    return { success: removeUrl }
   })

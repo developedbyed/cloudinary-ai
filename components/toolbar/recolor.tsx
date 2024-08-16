@@ -30,6 +30,7 @@ export default function AIRecolor() {
   const layers = useLayerStore((state) => state.layers)
   const generating = useImageStore((state) => state.generating)
   const setActiveLayer = useLayerStore((state) => state.setActiveLayer)
+
   return (
     <Popover>
       <PopoverTrigger disabled={!activeLayer?.url} asChild>
@@ -122,7 +123,7 @@ export default function AIRecolor() {
               activeImage: activeLayer.url!,
               tag: "prompt_" + activeTag,
             })
-            console.log(res)
+
             if (res?.data?.success) {
               const newLayerId = crypto.randomUUID()
               addLayer({
@@ -132,6 +133,7 @@ export default function AIRecolor() {
                 height: activeLayer.height,
                 width: activeLayer.width,
                 url: res.data.success,
+                publicId: activeLayer.publicId,
                 resourceType: "image",
               })
               setGenerating(false)

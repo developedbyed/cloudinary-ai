@@ -72,7 +72,7 @@ export default function Layers() {
       layout
       className="basis-[320px] shrink-0  scrollbar-thin scrollbar-track-secondary overflow-y-scroll scrollbar-thumb-primary scrollbar-thumb-rounded-full scrollbar-track-rounded-full overflow-x-hidden relative flex flex-col shadow-2xl"
     >
-      <CardHeader className="sticky top-0 z-50 px-4 py-6  min-h-28">
+      <CardHeader className="sticky top-0 z-50 px-4 py-6  min-h-28 bg-card shadow-sm">
         {layerComparisonMode ? (
           <div>
             <CardTitle className="text-sm pb-2">Comparing...</CardTitle>

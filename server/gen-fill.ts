@@ -3,6 +3,7 @@
 import { UploadApiResponse, v2 as cloudinary } from "cloudinary"
 import { actionClient } from "@/server/safe-action"
 import z from "zod"
+import { Cloudinary } from "@cloudinary/url-gen"
 
 cloudinary.config({
   cloud_name: "restyled",
@@ -33,9 +34,10 @@ export const genFill = actionClient
   .schema(genFillSchema)
   .action(async ({ parsedInput: { activeImage, aspect, width, height } }) => {
     const parts = activeImage.split("/upload/")
-    //https://res.cloudinary.com/demo/image/upload/ar_16:9,b_gen_fill,c_pad,w_1500/docs/moped.jpg
+
     const fillUrl = `${parts[0]}/upload/ar_${aspect},b_gen_fill,c_pad,w_${width},h_${height}/${parts[1]}`
-    console.log(fillUrl)
+    console.log(genFill)
+
     // Poll the URL to check if the image is processed
     let isProcessed = false
     const maxAttempts = 20
@@ -51,6 +53,5 @@ export const genFill = actionClient
     if (!isProcessed) {
       return { error: "Image processing failed" }
     }
-    console.log(fillUrl)
     return { success: fillUrl }
   })

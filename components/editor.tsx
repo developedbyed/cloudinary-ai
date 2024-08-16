@@ -7,9 +7,12 @@ import ImageTools from "./toolbar/image-tools"
 import VideoTools from "./toolbar/video-tools"
 import { ModeToggle } from "./toggle"
 import GenerativeFill from "./toolbar/generative-fill"
+import Loading from "./loading"
+import ExportAsset from "./toolbar/export-image"
 
 export default function Editor() {
-  const activeImage = useLayerStore((state) => state.activeLayer)
+  const activeLayer = useLayerStore((state) => state.activeLayer)
+
   return (
     <div className="flex h-full ">
       <div className="py-6 px-4  min-w-48 ">
@@ -17,11 +20,14 @@ export default function Editor() {
           <ModeToggle />
         </div>
         <div className="flex flex-col gap-4 ">
-          {activeImage.resourceType === "video" ? <VideoTools /> : null}
-          {activeImage.resourceType === "image" ? <ImageTools /> : null}
+          {activeLayer.resourceType === "video" ? <VideoTools /> : null}
+          {activeLayer.resourceType === "image" ? <ImageTools /> : null}
+          {activeLayer.resourceType && (
+            <ExportAsset resource={activeLayer.resourceType} />
+          )}
         </div>
       </div>
-
+      <Loading />
       <ActiveImage />
       <UploadForm />
       <Layers />
